@@ -15,12 +15,20 @@ class Send_processing():
         self.ip = ip
         self.port = port
     def tcp(self):#tcpの処理
-        seq = 1000000
-        sport = random.randint(50000,60000)
-        ip = IP(dst = self.ip)
-        tcp = TCP(sport = sport,dport = self.port, seq = seq , flags = 'S')
-        recv = sr1(ip/tcp)
-        print(recv)
+        for i in xrange(1024):
+            self.port = i
+            seq = 1000000
+            sport = random.randint(50000,60000)
+            ip = IP(dst = self.ip)
+            tcp = TCP(sport = sport,dport = self.port, seq = seq , flags = 'S')
+            recv = sr1(ip/tcp)
+            recv.show()
+            if recv['TCP'].flags == "SA":
+                print("¥t"+'success port is {1}'.format(i))
+                print("¥t"+'TCP treatment is success')
+            elif recv['TCP'].flags == "RA":
+                print("¥t"+'tailure port is {1}'.format(i))
+                print("¥t"+'TCP treament is tailure')
 
 
 def commandline(argc,argv): #cuiのコマンドライン実装機能 できればmanまで
@@ -51,7 +59,7 @@ def treatment_def(i,p):#Send_processingを使う
 
 def main():#通信やフレームワークなどの設定
     commandline(argc,argv)
-    treatment_def("172.16.212.254",1234)
+    treatment_def("172.16.254.20",22)#"172.16.212.254"
 
 if __name__ == "__main__":
     main()
