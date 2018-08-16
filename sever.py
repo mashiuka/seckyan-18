@@ -1,4 +1,4 @@
-#!/usr/bin/python
+ #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 import random
@@ -14,23 +14,25 @@ class Send_processing():
     def __init__(self,ip,port): #引数　ネットワーク接続
         self.ip = ip
         self.port = port
-    def tcp(self):#tcpの処理
-        for i in xrange(1024):  
-        seq = 1000000
-        sport = random.randint(50000,60000)
-        ip = IP(dst = self.ip)
-        tcp = TCP(sport = sport,dport = self.port, seq = seq , flags = 'S')
-        recv = sr1(ip/tcp)
-        recv.show()
-        if recv['TCP'].flags == "SA":
-              print("\t"+'TCP treatment is success')
-        elif recv['TCP'].flags == "RA":
-              print("\t"+'TCP treament is tailure')
 
+    def tcp(self):#tcpの処理
+        ip = IP(dst = self.ip)
+        seq = 1000000
+        for i in xrange(1,51):
+            port = i
+            sport = random.randint(50000,60000)
+            tcp = TCP(sport = sport,dport = port, seq = seq , flags = 'S')
+            recv = sr1(ip/tcp,verbose = False)
+
+            if recv['TCP'].flags == "SA":
+                print('{0}/TCP : open '.format(i))
+
+            elif recv['TCP'].flags == "RA":
+                print('{0}/TCP : close'.format(i))
 
 def commandline(argc,argv): #cuiのコマンドライン実装機能 できればmanまで
-    if argc == 2:
-        print('To start the communication') #3個だった場合タプルで(1,2)や(2,4)など
+    if argc >= 3:
+        print('To start the ' + argv[1]) #3個だった場合タプルで(1,2)や(2,4)など
         return True
 
     elif argc <= 1 :
@@ -38,17 +40,10 @@ def commandline(argc,argv): #cuiのコマンドライン実装機能 できれ�
         print(stment)
         return False
 
-    elif argc >= 3:
+    elif argc > 4:
         print('Argument is missing - many Argument')
         print(stment)
         return False
-
-        def certify():
-            if commandline():
-                # if argv[2] is #きまったら処理　自分としては -s 探す　-v　見る　-
-                pass
-            # elif commandline() == 0:
-            #     print()
 
 def treatment_def(i,p):#Send_processingを使う
      treatment = Send_processing(i,p)
@@ -56,7 +51,7 @@ def treatment_def(i,p):#Send_processingを使う
 
 def main():#通信やフレームワークなどの設定
     commandline(argc,argv)
-    treatment_def("172.16.254.20",22)#"172.16.212.254"
+    treatment_def(argv[1],0)#"172.16.212.254"
 
 if __name__ == "__main__":
     main()
