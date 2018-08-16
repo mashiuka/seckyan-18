@@ -1,32 +1,62 @@
-import socket
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 
-addres = ("localhost", 1234)
-max_size = 1000
+import random
+import sys
+from scapy.all import *
 
-try:
-  sever = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
-  sever.bind(addres)
-  sever.listen(1)
-  client,addr = sever.accept()
-  data = client.recv(max_size)
-  client.sendall(b'you said >>   ')
-  client.sendall(data)
-  massage = data
-  massage = data.decode('UTF-8')
+stment =  " COMMAND LINE EROOR { COMMAND LINE IS limited to 3 and COMMAND LINE is　Less than 2 } "
+argc = len(sys.argv)
+argv = sys.argv
+print(argc)
+
+class Send_processing():
+    def __init__(self,ip,port): #引数　ネットワーク接続
+        self.ip = ip
+        self.port = port
+    def tcp(self):#tcpの処理
+        for i in xrange(1024):  
+        seq = 1000000
+        sport = random.randint(50000,60000)
+        ip = IP(dst = self.ip)
+        tcp = TCP(sport = sport,dport = self.port, seq = seq , flags = 'S')
+        recv = sr1(ip/tcp)
+        recv.show()
+        if recv['TCP'].flags == "SA":
+              print("\t"+'TCP treatment is success')
+        elif recv['TCP'].flags == "RA":
+              print("\t"+'TCP treament is tailure')
 
 
-  if massage == "NO NAME":
-        print("no name")   
-        client.sendall(b"\nRETRUN")
- 
-  elif len(massage) >= 0:
-        print("ok")
-        client.sendall(b'\nOK')
+def commandline(argc,argv): #cuiのコマンドライン実装機能 できればmanまで
+    if argc == 2:
+        print('To start the communication') #3個だった場合タプルで(1,2)や(2,4)など
+        return True
 
-  else:
-      print('ERROR')
-  client.close()
-  sever.close()
+    elif argc <= 1 :
+        print('Argument is missing - Few Argument')
+        print(stment)
+        return False
 
-except OSError:
-    print('OSError')
+    elif argc >= 3:
+        print('Argument is missing - many Argument')
+        print(stment)
+        return False
+
+        def certify():
+            if commandline():
+                # if argv[2] is #きまったら処理　自分としては -s 探す　-v　見る　-
+                pass
+            # elif commandline() == 0:
+            #     print()
+
+def treatment_def(i,p):#Send_processingを使う
+     treatment = Send_processing(i,p)
+     treatment.tcp()
+
+def main():#通信やフレームワークなどの設定
+    commandline(argc,argv)
+    treatment_def("172.16.254.20",22)#"172.16.212.254"
+
+if __name__ == "__main__":
+    main()
