@@ -1,3 +1,7 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+import random
 import sys
 from scapy.all import *
 
@@ -10,7 +14,9 @@ class Send_processing():
     def __init__(self,ip,port): #引数　ネットワーク接続
         self.ip = ip
         self.port = port
-    def tcp():#tcpの処理
+    def tcp(self):#tcpの処理
+        seq = 1000000
+        sport = random.randint(50000,60000)
         ip = IP(dst = self.ip)
         tcp = TCP(sport = sport,dport = self.port, seq = seq , flags = 'S')
         recv = sr1(ip/tcp)
@@ -39,12 +45,13 @@ def commandline(argc,argv): #cuiのコマンドライン実装機能 できれ�
             # elif commandline() == 0:
             #     print()
 
-def treatment():#Send_processingを使う
-     treatment = Send_processing()
-     treatment.tcp(localhost,1234)
+def treatment_def(i,p):#Send_processingを使う
+     treatment = Send_processing(i,p)
+     treatment.tcp()
 
 def main():#通信やフレームワークなどの設定
-    pass
+    commandline(argc,argv)
+    treatment_def("172.16.212.254",1234)
 
 if __name__ == "__main__":
-    commandline(argc,argv)
+    main()
